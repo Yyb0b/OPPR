@@ -36,7 +36,7 @@ class OPPR():
     def model_performance(self):
         return np.sqrt(np.mean((self.train_y - self.y_pre)**2))
 
-    def framework(self, ):
+    def framework(self):
         def beyas_target(speed):
             return -abs(self.OASVR.predict(np.array([speed, self.train_data[i][1], self.train_data[i][2]]))[0,0] - self.target)
 
@@ -85,3 +85,15 @@ class OPPR():
                         print("warning")
                     if rmse > self.rmse_result[-1]:
                         self.dynamic_window += 1
+
+if __name__ == "__main__":
+    file_path = "the csv data path"
+    data = pd.read_csv(file_path)
+    data_x = data.iloc[:, :3]
+    data_y = data.iloc[:, 3]
+    C, kernelParam, eps, bias = 1, 0.1, 0.1, 0.1 # params of OASVR
+    train_size, test_size, init_window_size = 100, 5, 100 # params of framework
+    target, min_speed, max_speed = 104, 3, 18 # params of Beysian Opitimaztion
+    oppr = OPPR(data_x, data_y, C, kernelParam, eps, bias, train_size, test_size, init_window_size, target, min_speed, max_speed, max_window_size=None)
+    oppr.framework()
+
